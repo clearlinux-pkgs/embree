@@ -1,0 +1,1 @@
+pushd clr-build; ctest %{?_smp_mflags} -E verify; popd
