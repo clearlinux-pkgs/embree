@@ -4,14 +4,13 @@
 #
 Name     : embree
 Version  : 3.4.0
-Release  : 10
+Release  : 11
 URL      : https://github.com/embree/embree/archive/v3.4.0.tar.gz
 Source0  : https://github.com/embree/embree/archive/v3.4.0.tar.gz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : Apache-2.0 BSD-3-Clause Libpng MIT
 Requires: embree-lib = %{version}-%{release}
-Requires: embree-libexec = %{version}-%{release}
 Requires: embree-license = %{version}-%{release}
 BuildRequires : buildreq-cmake
 BuildRequires : cmake
@@ -39,6 +38,7 @@ Group: Development
 Requires: embree-lib = %{version}-%{release}
 Requires: embree-extras = %{version}-%{release}
 Provides: embree-devel = %{version}-%{release}
+Requires: embree = %{version}-%{release}
 
 %description dev
 dev components for the embree package.
@@ -63,20 +63,10 @@ extras components for the embree package.
 %package lib
 Summary: lib components for the embree package.
 Group: Libraries
-Requires: embree-libexec = %{version}-%{release}
 Requires: embree-license = %{version}-%{release}
 
 %description lib
 lib components for the embree package.
-
-
-%package libexec
-Summary: libexec components for the embree package.
-Group: Default
-Requires: embree-license = %{version}-%{release}
-
-%description libexec
-libexec components for the embree package.
 
 
 %package license
@@ -89,81 +79,89 @@ license components for the embree package.
 
 %prep
 %setup -q -n embree-3.4.0
-pushd ..
-cp -a embree-3.4.0 buildavx2
-popd
-pushd ..
-cp -a embree-3.4.0 buildavx512
-popd
+cd %{_builddir}/embree-3.4.0
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1548197368
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1576001488
 mkdir -p clr-build
 pushd clr-build
+export GCC_IGNORE_WERROR=1
 export CC=clang
 export CXX=clang++
 export LD=ld.gold
+CFLAGS=${CFLAGS/ -Wa,/ -fno-integrated-as -Wa,}
+CXXFLAGS=${CXXFLAGS/ -Wa,/ -fno-integrated-as -Wa,}
 unset LDFLAGS
+export CFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$CFLAGS -fno-lto "
+export FFLAGS="$CFLAGS -fno-lto "
+export CXXFLAGS="$CXXFLAGS -fno-lto "
 %cmake .. -DEMBREE_ISPC_SUPPORT=false \
 -DTASKING_TBB=true \
 -DCMAKE_INSTALL_BINDIR=libexec
-make  %{?_smp_mflags} VERBOSE=1
+make  %{?_smp_mflags}  VERBOSE=1
 popd
 mkdir -p clr-build-avx2
 pushd clr-build-avx2
+export GCC_IGNORE_WERROR=1
 export CC=clang
 export CXX=clang++
 export LD=ld.gold
+CFLAGS=${CFLAGS/ -Wa,/ -fno-integrated-as -Wa,}
+CXXFLAGS=${CXXFLAGS/ -Wa,/ -fno-integrated-as -Wa,}
 unset LDFLAGS
-export CFLAGS="$CFLAGS -O3 -march=haswell "
-export FCFLAGS="$CFLAGS -O3 -march=haswell "
-export FFLAGS="$CFLAGS -O3 -march=haswell "
-export CXXFLAGS="$CXXFLAGS -O3 -march=haswell "
+export CFLAGS="$CFLAGS -O3 -fno-lto -march=haswell "
+export FCFLAGS="$CFLAGS -O3 -fno-lto -march=haswell "
+export FFLAGS="$CFLAGS -O3 -fno-lto -march=haswell "
+export CXXFLAGS="$CXXFLAGS -O3 -fno-lto -march=haswell "
 export CFLAGS="$CFLAGS -march=haswell -m64"
 export CXXFLAGS="$CXXFLAGS -march=haswell -m64"
 %cmake .. -DEMBREE_ISPC_SUPPORT=false \
 -DTASKING_TBB=true \
 -DCMAKE_INSTALL_BINDIR=libexec
-make  %{?_smp_mflags} VERBOSE=1
+make  %{?_smp_mflags}  VERBOSE=1
 popd
 mkdir -p clr-build-avx512
 pushd clr-build-avx512
+export GCC_IGNORE_WERROR=1
 export CC=clang
 export CXX=clang++
 export LD=ld.gold
+CFLAGS=${CFLAGS/ -Wa,/ -fno-integrated-as -Wa,}
+CXXFLAGS=${CXXFLAGS/ -Wa,/ -fno-integrated-as -Wa,}
 unset LDFLAGS
-export CFLAGS="$CFLAGS -O3 -march=skylake-avx512 "
-export FCFLAGS="$CFLAGS -O3 -march=skylake-avx512 "
-export FFLAGS="$CFLAGS -O3 -march=skylake-avx512 "
-export CXXFLAGS="$CXXFLAGS -O3 -march=skylake-avx512 "
+export CFLAGS="$CFLAGS -O3 -fno-lto -march=skylake-avx512 "
+export FCFLAGS="$CFLAGS -O3 -fno-lto -march=skylake-avx512 "
+export FFLAGS="$CFLAGS -O3 -fno-lto -march=skylake-avx512 "
+export CXXFLAGS="$CXXFLAGS -O3 -fno-lto -march=skylake-avx512 "
 export CFLAGS="$CFLAGS -march=skylake-avx512 -m64 "
 export CXXFLAGS="$CXXFLAGS -march=skylake-avx512 -m64 "
 %cmake .. -DEMBREE_ISPC_SUPPORT=false \
 -DTASKING_TBB=true \
 -DCMAKE_INSTALL_BINDIR=libexec
-make  %{?_smp_mflags} VERBOSE=1
+make  %{?_smp_mflags}  VERBOSE=1
 popd
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 pushd clr-build; ctest %{?_smp_mflags} -E verify; popd
 
 %install
-export SOURCE_DATE_EPOCH=1548197368
+export SOURCE_DATE_EPOCH=1576001488
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/embree
-cp LICENSE.txt %{buildroot}/usr/share/package-licenses/embree/LICENSE.txt
-cp tutorials/common/glfw/COPYING.txt %{buildroot}/usr/share/package-licenses/embree/tutorials_common_glfw_COPYING.txt
-cp tutorials/common/image/LICENSE-OpenImageIO.txt %{buildroot}/usr/share/package-licenses/embree/tutorials_common_image_LICENSE-OpenImageIO.txt
-cp tutorials/common/image/LICENSE-libpng.txt %{buildroot}/usr/share/package-licenses/embree/tutorials_common_image_LICENSE-libpng.txt
-cp tutorials/common/imgui/LICENSE.txt %{buildroot}/usr/share/package-licenses/embree/tutorials_common_imgui_LICENSE.txt
+cp %{_builddir}/embree-3.4.0/LICENSE.txt %{buildroot}/usr/share/package-licenses/embree/2b8b815229aa8a61e483fb4ba0588b8b6c491890
+cp %{_builddir}/embree-3.4.0/tutorials/common/glfw/COPYING.txt %{buildroot}/usr/share/package-licenses/embree/d3c41d58a2a6a19465e61e6710203244faec7db2
+cp %{_builddir}/embree-3.4.0/tutorials/common/image/LICENSE-OpenImageIO.txt %{buildroot}/usr/share/package-licenses/embree/24a27830f935f1897591ccca75ca91ec20f44110
+cp %{_builddir}/embree-3.4.0/tutorials/common/image/LICENSE-libpng.txt %{buildroot}/usr/share/package-licenses/embree/29ea6e94fd70b40f2678cb0dafd688fd7d1ec186
+cp %{_builddir}/embree-3.4.0/tutorials/common/imgui/LICENSE.txt %{buildroot}/usr/share/package-licenses/embree/35c378e9a2394a10656c4f7075323670e5bfd5f5
 pushd clr-build-avx512
 %make_install_avx512  || :
 popd
@@ -393,88 +391,10 @@ popd
 /usr/lib64/libembree3.so.3
 /usr/lib64/libembree3.so.3.4.0
 
-%files libexec
-%defattr(-,root,root,-)
-%exclude /usr/libexec/embree3/buildbench
-%exclude /usr/libexec/embree3/bvh_access
-%exclude /usr/libexec/embree3/bvh_builder
-%exclude /usr/libexec/embree3/convert
-%exclude /usr/libexec/embree3/curve_geometry
-%exclude /usr/libexec/embree3/displacement_geometry
-%exclude /usr/libexec/embree3/dynamic_scene
-%exclude /usr/libexec/embree3/grid_geometry
-%exclude /usr/libexec/embree3/hair_geometry
-%exclude /usr/libexec/embree3/instanced_geometry
-%exclude /usr/libexec/embree3/interpolation
-%exclude /usr/libexec/embree3/intersection_filter
-%exclude /usr/libexec/embree3/lazy_geometry
-%exclude /usr/libexec/embree3/models/cornell_box.ecs
-%exclude /usr/libexec/embree3/models/cornell_box.mtl
-%exclude /usr/libexec/embree3/models/cornell_box.obj
-%exclude /usr/libexec/embree3/models/cornell_box.xml
-%exclude /usr/libexec/embree3/models/cornell_box.xml.bin
-%exclude /usr/libexec/embree3/models/cornell_box_mblur.xml
-%exclude /usr/libexec/embree3/models/cornell_box_mblur.xml.bin
-%exclude /usr/libexec/embree3/models/curve0.xml
-%exclude /usr/libexec/embree3/models/curve1.xml
-%exclude /usr/libexec/embree3/models/cylinder.ecs
-%exclude /usr/libexec/embree3/models/cylinder.xml
-%exclude /usr/libexec/embree3/models/hair0.ecs
-%exclude /usr/libexec/embree3/models/hair0.xml
-%exclude /usr/libexec/embree3/models/hair1.xml
-%exclude /usr/libexec/embree3/models/linesegments.ecs
-%exclude /usr/libexec/embree3/models/linesegments.xml
-%exclude /usr/libexec/embree3/models/mblur_time_range_curve.xml
-%exclude /usr/libexec/embree3/models/mblur_time_range_grid.xml
-%exclude /usr/libexec/embree3/models/mblur_time_range_line.xml
-%exclude /usr/libexec/embree3/models/mblur_time_range_quad.xml
-%exclude /usr/libexec/embree3/models/mblur_time_range_triangle.xml
-%exclude /usr/libexec/embree3/models/oriented_curve0.xml
-%exclude /usr/libexec/embree3/models/oriented_curve1.xml
-%exclude /usr/libexec/embree3/models/oriented_curves.xml
-%exclude /usr/libexec/embree3/models/subdiv0.ecs
-%exclude /usr/libexec/embree3/models/subdiv0.xml
-%exclude /usr/libexec/embree3/models/subdiv1.ecs
-%exclude /usr/libexec/embree3/models/subdiv1.xml
-%exclude /usr/libexec/embree3/models/subdiv3.ecs
-%exclude /usr/libexec/embree3/models/subdiv3.xml
-%exclude /usr/libexec/embree3/models/subdiv4.ecs
-%exclude /usr/libexec/embree3/models/subdiv4.xml
-%exclude /usr/libexec/embree3/models/subdiv5.ecs
-%exclude /usr/libexec/embree3/models/subdiv5.xml
-%exclude /usr/libexec/embree3/models/subdiv6.ecs
-%exclude /usr/libexec/embree3/models/subdiv6.xml
-%exclude /usr/libexec/embree3/models/subdiv7.ecs
-%exclude /usr/libexec/embree3/models/subdiv7.xml
-%exclude /usr/libexec/embree3/models/subdiv8.ecs
-%exclude /usr/libexec/embree3/models/subdiv8.xml
-%exclude /usr/libexec/embree3/models/subdiv9.ecs
-%exclude /usr/libexec/embree3/models/subdiv9.xml
-%exclude /usr/libexec/embree3/models/subdiv_no_boundary.ecs
-%exclude /usr/libexec/embree3/models/subdiv_no_boundary.xml
-%exclude /usr/libexec/embree3/models/subdiv_pin_all.ecs
-%exclude /usr/libexec/embree3/models/subdiv_pin_all.xml
-%exclude /usr/libexec/embree3/models/subdiv_pin_boundary.ecs
-%exclude /usr/libexec/embree3/models/subdiv_pin_boundary.xml
-%exclude /usr/libexec/embree3/models/subdiv_pin_corners.ecs
-%exclude /usr/libexec/embree3/models/subdiv_pin_corners.xml
-%exclude /usr/libexec/embree3/models/subdiv_smooth_boundary.ecs
-%exclude /usr/libexec/embree3/models/subdiv_smooth_boundary.xml
-%exclude /usr/libexec/embree3/motion_blur_geometry
-%exclude /usr/libexec/embree3/pathtracer
-%exclude /usr/libexec/embree3/point_geometry
-%exclude /usr/libexec/embree3/subdivision_geometry
-%exclude /usr/libexec/embree3/triangle_geometry
-%exclude /usr/libexec/embree3/user_geometry
-%exclude /usr/libexec/embree3/verify
-%exclude /usr/libexec/embree3/viewer
-%exclude /usr/libexec/embree3/viewer_anim
-%exclude /usr/libexec/embree3/viewer_stream
-
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/embree/LICENSE.txt
-/usr/share/package-licenses/embree/tutorials_common_glfw_COPYING.txt
-/usr/share/package-licenses/embree/tutorials_common_image_LICENSE-OpenImageIO.txt
-/usr/share/package-licenses/embree/tutorials_common_image_LICENSE-libpng.txt
-/usr/share/package-licenses/embree/tutorials_common_imgui_LICENSE.txt
+/usr/share/package-licenses/embree/24a27830f935f1897591ccca75ca91ec20f44110
+/usr/share/package-licenses/embree/29ea6e94fd70b40f2678cb0dafd688fd7d1ec186
+/usr/share/package-licenses/embree/2b8b815229aa8a61e483fb4ba0588b8b6c491890
+/usr/share/package-licenses/embree/35c378e9a2394a10656c4f7075323670e5bfd5f5
+/usr/share/package-licenses/embree/d3c41d58a2a6a19465e61e6710203244faec7db2
