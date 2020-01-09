@@ -4,7 +4,7 @@
 #
 Name     : embree
 Version  : 3.4.0
-Release  : 11
+Release  : 12
 URL      : https://github.com/embree/embree/archive/v3.4.0.tar.gz
 Source0  : https://github.com/embree/embree/archive/v3.4.0.tar.gz
 Summary  : No detailed summary available
