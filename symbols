@@ -1,6 +1,7 @@
 libembree3.so.3:rtcAttachGeometry
 libembree3.so.3:rtcAttachGeometryByID
 libembree3.so.3:rtcBuildBVH
+libembree3.so.3:rtcCollide
 libembree3.so.3:rtcCommitGeometry
 libembree3.so.3:rtcCommitScene
 libembree3.so.3:rtcDetachGeometry
@@ -49,6 +50,10 @@ libembree3.so.3:rtcOccluded4
 libembree3.so.3:rtcOccluded8
 libembree3.so.3:rtcOccludedNM
 libembree3.so.3:rtcOccludedNp
+libembree3.so.3:rtcPointQuery
+libembree3.so.3:rtcPointQuery16
+libembree3.so.3:rtcPointQuery4
+libembree3.so.3:rtcPointQuery8
 libembree3.so.3:rtcReleaseBVH
 libembree3.so.3:rtcReleaseBuffer
 libembree3.so.3:rtcReleaseDevice
@@ -72,12 +77,14 @@ libembree3.so.3:rtcSetGeometryIntersectFunction
 libembree3.so.3:rtcSetGeometryMask
 libembree3.so.3:rtcSetGeometryOccludedFilterFunction
 libembree3.so.3:rtcSetGeometryOccludedFunction
+libembree3.so.3:rtcSetGeometryPointQueryFunction
 libembree3.so.3:rtcSetGeometrySubdivisionMode
 libembree3.so.3:rtcSetGeometryTessellationRate
 libembree3.so.3:rtcSetGeometryTimeRange
 libembree3.so.3:rtcSetGeometryTimeStepCount
 libembree3.so.3:rtcSetGeometryTopologyCount
 libembree3.so.3:rtcSetGeometryTransform
+libembree3.so.3:rtcSetGeometryTransformQuaternion
 libembree3.so.3:rtcSetGeometryUserData
 libembree3.so.3:rtcSetGeometryUserPrimitiveCount
 libembree3.so.3:rtcSetGeometryVertexAttributeCount
