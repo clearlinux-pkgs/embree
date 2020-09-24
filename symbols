@@ -22,6 +22,7 @@ libembree3.so.3:rtcGetGeometryPreviousHalfEdge
 libembree3.so.3:rtcGetGeometryTransform
 libembree3.so.3:rtcGetGeometryUserData
 libembree3.so.3:rtcGetSceneBounds
+libembree3.so.3:rtcGetSceneDevice
 libembree3.so.3:rtcGetSceneFlags
 libembree3.so.3:rtcGetSceneLinearBounds
 libembree3.so.3:rtcInterpolate
@@ -75,6 +76,7 @@ libembree3.so.3:rtcSetGeometryInstancedScene
 libembree3.so.3:rtcSetGeometryIntersectFilterFunction
 libembree3.so.3:rtcSetGeometryIntersectFunction
 libembree3.so.3:rtcSetGeometryMask
+libembree3.so.3:rtcSetGeometryMaxRadiusScale
 libembree3.so.3:rtcSetGeometryOccludedFilterFunction
 libembree3.so.3:rtcSetGeometryOccludedFunction
 libembree3.so.3:rtcSetGeometryPointQueryFunction
