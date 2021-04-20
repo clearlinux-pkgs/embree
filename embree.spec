@@ -4,7 +4,7 @@
 #
 Name     : embree
 Version  : 3.12.0
-Release  : 14
+Release  : 15
 URL      : https://github.com/embree/embree/archive/v3.12.0/embree-3.12.0.tar.gz
 Source0  : https://github.com/embree/embree/archive/v3.12.0/embree-3.12.0.tar.gz
 Summary  : No detailed summary available
@@ -97,7 +97,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1600967207
+export SOURCE_DATE_EPOCH=1618878909
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -114,7 +114,7 @@ export CXXFLAGS="$CXXFLAGS -fno-lto "
 %cmake .. -DEMBREE_ISPC_SUPPORT=false \
 -DTASKING_TBB=true \
 -DCMAKE_INSTALL_BINDIR=libexec
-make  %{?_smp_mflags}
+make  %{?_smp_mflags}  VERBOSE=1
 popd
 mkdir -p clr-build-avx2
 pushd clr-build-avx2
@@ -136,7 +136,7 @@ export FCFLAGS="$FCFLAGS -march=haswell -m64"
 %cmake .. -DEMBREE_ISPC_SUPPORT=false \
 -DTASKING_TBB=true \
 -DCMAKE_INSTALL_BINDIR=libexec
-make  %{?_smp_mflags}
+make  %{?_smp_mflags}  VERBOSE=1
 popd
 mkdir -p clr-build-avx512
 pushd clr-build-avx512
@@ -158,7 +158,7 @@ export FCFLAGS="$FCFLAGS -march=skylake-avx512 -m64 "
 %cmake .. -DEMBREE_ISPC_SUPPORT=false \
 -DTASKING_TBB=true \
 -DCMAKE_INSTALL_BINDIR=libexec
-make  %{?_smp_mflags}
+make  %{?_smp_mflags}  VERBOSE=1
 popd
 
 %check
@@ -169,7 +169,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 pushd clr-build; ctest %{?_smp_mflags} -E verify; popd
 
 %install
-export SOURCE_DATE_EPOCH=1600967207
+export SOURCE_DATE_EPOCH=1618878909
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/embree
 cp %{_builddir}/embree-3.12.0/LICENSE.txt %{buildroot}/usr/share/package-licenses/embree/2b8b815229aa8a61e483fb4ba0588b8b6c491890
