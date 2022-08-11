@@ -4,7 +4,7 @@
 #
 Name     : embree
 Version  : 3.12.0
-Release  : 19
+Release  : 20
 URL      : https://github.com/embree/embree/archive/v3.12.0/embree-3.12.0.tar.gz
 Source0  : https://github.com/embree/embree/archive/v3.12.0/embree-3.12.0.tar.gz
 Summary  : No detailed summary available
