@@ -4,7 +4,7 @@
 #
 Name     : embree
 Version  : 3.13.5
-Release  : 25
+Release  : 26
 URL      : https://github.com/embree/embree/archive/v3.13.5/embree-3.13.5.tar.gz
 Source0  : https://github.com/embree/embree/archive/v3.13.5/embree-3.13.5.tar.gz
 Summary  : No detailed summary available
@@ -29,6 +29,9 @@ BuildRequires : oiio-dev
 BuildRequires : pypi(numpy)
 BuildRequires : pypi(sympy)
 BuildRequires : tbb-dev
+# Suppress stripping binaries
+%define __strip /bin/true
+%define debug_package %{nil}
 
 %description
 % Embree: High Performance Ray Tracing Kernels 3.13.5
@@ -110,7 +113,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1672172553
+export SOURCE_DATE_EPOCH=1672867071
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -138,10 +141,10 @@ export LD=ld.gold
 CFLAGS=${CFLAGS/ -Wa,/ -fno-integrated-as -Wa,}
 CXXFLAGS=${CXXFLAGS/ -Wa,/ -fno-integrated-as -Wa,}
 unset LDFLAGS
-export CFLAGS="$CFLAGS -O3 -Wl,-z,x86-64-v3 -fno-lto -march=x86-64-v3 -mtune=skylake "
-export FCFLAGS="$FFLAGS -O3 -Wl,-z,x86-64-v3 -fno-lto -march=x86-64-v3 -mtune=skylake "
-export FFLAGS="$FFLAGS -O3 -Wl,-z,x86-64-v3 -fno-lto -march=x86-64-v3 -mtune=skylake "
-export CXXFLAGS="$CXXFLAGS -O3 -Wl,-z,x86-64-v3 -fno-lto -march=x86-64-v3 -mtune=skylake "
+export CFLAGS="$CFLAGS -O3 -Wl,-z,x86-64-v3 -fno-lto -march=x86-64-v3 "
+export FCFLAGS="$FFLAGS -O3 -Wl,-z,x86-64-v3 -fno-lto -march=x86-64-v3 "
+export FFLAGS="$FFLAGS -O3 -Wl,-z,x86-64-v3 -fno-lto -march=x86-64-v3 "
+export CXXFLAGS="$CXXFLAGS -O3 -Wl,-z,x86-64-v3 -fno-lto -march=x86-64-v3 "
 export CFLAGS="$CFLAGS -march=x86-64-v3 -m64 -Wl,-z,x86-64-v3"
 export CXXFLAGS="$CXXFLAGS -march=x86-64-v3 -m64 -Wl,-z,x86-64-v3"
 export FFLAGS="$FFLAGS -march=x86-64-v3 -m64 -Wl,-z,x86-64-v3"
@@ -160,13 +163,13 @@ export LD=ld.gold
 CFLAGS=${CFLAGS/ -Wa,/ -fno-integrated-as -Wa,}
 CXXFLAGS=${CXXFLAGS/ -Wa,/ -fno-integrated-as -Wa,}
 unset LDFLAGS
-export CFLAGS="$CFLAGS -O3 -Wl,-z,x86-64-v4 -fno-lto -march=x86_64-v4 -mtune=skylake "
-export FCFLAGS="$FFLAGS -O3 -Wl,-z,x86-64-v4 -fno-lto -march=x86_64-v4 -mtune=skylake "
-export FFLAGS="$FFLAGS -O3 -Wl,-z,x86-64-v4 -fno-lto -march=x86_64-v4 -mtune=skylake "
-export CXXFLAGS="$CXXFLAGS -O3 -Wl,-z,x86-64-v4 -fno-lto -march=x86_64-v4 -mtune=skylake "
-export CFLAGS="$CFLAGS -march=x86-64-v4 -m64 -Wl,-z,x86-64-v4 "
-export CXXFLAGS="$CXXFLAGS -march=x86-64-v4 -m64 -Wl,-z,x86-64-v4 "
-export FFLAGS="$FFLAGS -march=x86-64-v4 -m64 -Wl,-z,x86-64-v4 "
+export CFLAGS="$CFLAGS -O3 -Wl,-z,x86-64-v4 -fno-lto -march=x86_64-v4 -mprefer-vector-width=512 "
+export FCFLAGS="$FFLAGS -O3 -Wl,-z,x86-64-v4 -fno-lto -march=x86_64-v4 -mprefer-vector-width=512 "
+export FFLAGS="$FFLAGS -O3 -Wl,-z,x86-64-v4 -fno-lto -march=x86_64-v4 -mprefer-vector-width=512 "
+export CXXFLAGS="$CXXFLAGS -O3 -Wl,-z,x86-64-v4 -fno-lto -march=x86_64-v4 -mprefer-vector-width=512 "
+export CFLAGS="$CFLAGS -march=x86-64-v4 -m64 -Wl,-z,x86-64-v4 -mprefer-vector-width=512"
+export CXXFLAGS="$CXXFLAGS -march=x86-64-v4 -m64 -Wl,-z,x86-64-v4 -mprefer-vector-width=512"
+export FFLAGS="$FFLAGS -march=x86-64-v4 -m64 -Wl,-z,x86-64-v4 -mprefer-vector-width=512"
 export FCFLAGS="$FCFLAGS -march=x86-64-v4 -m64 "
 %cmake .. -DEMBREE_ISPC_SUPPORT=false \
 -DTASKING_TBB=true \
@@ -182,12 +185,12 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 pushd clr-build; ctest %{?_smp_mflags} -E verify; popd
 
 %install
-export SOURCE_DATE_EPOCH=1672172553
+export SOURCE_DATE_EPOCH=1672867071
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/embree
-cp %{_builddir}/embree-%{version}/LICENSE.txt %{buildroot}/usr/share/package-licenses/embree/2b8b815229aa8a61e483fb4ba0588b8b6c491890
-cp %{_builddir}/embree-%{version}/tutorials/common/glfw/COPYING.txt %{buildroot}/usr/share/package-licenses/embree/d3c41d58a2a6a19465e61e6710203244faec7db2
-cp %{_builddir}/embree-%{version}/tutorials/common/imgui/LICENSE.txt %{buildroot}/usr/share/package-licenses/embree/35c378e9a2394a10656c4f7075323670e5bfd5f5
+cp %{_builddir}/embree-%{version}/LICENSE.txt %{buildroot}/usr/share/package-licenses/embree/2b8b815229aa8a61e483fb4ba0588b8b6c491890 || :
+cp %{_builddir}/embree-%{version}/tutorials/common/glfw/COPYING.txt %{buildroot}/usr/share/package-licenses/embree/d3c41d58a2a6a19465e61e6710203244faec7db2 || :
+cp %{_builddir}/embree-%{version}/tutorials/common/imgui/LICENSE.txt %{buildroot}/usr/share/package-licenses/embree/35c378e9a2394a10656c4f7075323670e5bfd5f5 || :
 pushd clr-build-avx2
 %make_install_v3  || :
 popd
