@@ -5,7 +5,7 @@
 #
 Name     : embree
 Version  : 3.13.5
-Release  : 29
+Release  : 30
 URL      : https://github.com/embree/embree/archive/v3.13.5/embree-3.13.5.tar.gz
 Source0  : https://github.com/embree/embree/archive/v3.13.5/embree-3.13.5.tar.gz
 Summary  : No detailed summary available
@@ -98,7 +98,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1682959802
+export SOURCE_DATE_EPOCH=1687466858
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -170,7 +170,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 pushd clr-build; ctest %{?_smp_mflags} -E verify; popd
 
 %install
-export SOURCE_DATE_EPOCH=1682959802
+export SOURCE_DATE_EPOCH=1687466858
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/embree
 cp %{_builddir}/embree-%{version}/LICENSE.txt %{buildroot}/usr/share/package-licenses/embree/2b8b815229aa8a61e483fb4ba0588b8b6c491890 || :
@@ -193,8 +193,6 @@ popd
 
 %files dev
 %defattr(-,root,root,-)
-/V3/usr/lib64/libembree3.so
-/V4/usr/lib64/libembree3.so
 /usr/include/embree3/rtcore.h
 /usr/include/embree3/rtcore.isph
 /usr/include/embree3/rtcore_buffer.h
@@ -464,9 +462,7 @@ popd
 
 %files lib
 %defattr(-,root,root,-)
-/V3/usr/lib64/libembree3.so.3
 /V3/usr/lib64/libembree3.so.3.13.5
-/V4/usr/lib64/libembree3.so.3
 /V4/usr/lib64/libembree3.so.3.13.5
 /usr/lib64/libembree3.so.3
 /usr/lib64/libembree3.so.3.13.5
