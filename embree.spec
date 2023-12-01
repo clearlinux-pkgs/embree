@@ -7,7 +7,7 @@
 #
 Name     : embree
 Version  : 3.13.5
-Release  : 31
+Release  : 32
 URL      : https://github.com/embree/embree/archive/v3.13.5/embree-3.13.5.tar.gz
 Source0  : https://github.com/embree/embree/archive/v3.13.5/embree-3.13.5.tar.gz
 Summary  : No detailed summary available
